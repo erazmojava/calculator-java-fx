@@ -7,10 +7,14 @@ import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.stage.Stage;
 
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+import javax.script.ScriptException;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -63,45 +67,64 @@ public class Controller implements Initializable {
     private Button multiple;
     @FXML
     EventHandler handleNine = new EventHandler() {
+
         @Override
         public void handle(Event event) {
-            result.setText(result.getText() + "9");
+            if (checkD()) {
+
+
+                result.setText(result.getText() + "9");
+            }
         }
     };
     EventHandler handleEight = new EventHandler() {
         @Override
         public void handle(Event event) {
-            result.setText(result.getText() + "8");
+            if(checkD()) {
+                result.setText(result.getText() + "8");
+            }
         }
     };
     EventHandler handleSeven = new EventHandler() {
         @Override
         public void handle(Event event) {
-            result.setText(result.getText() + "7");
+            if (checkD()) {
+                result.setText(result.getText() + "7");
+            }
         }
     };
     EventHandler handleSix = new EventHandler() {
         @Override
         public void handle(Event event) {
-            result.setText(result.getText() + "6");
+            if (checkD()) {
+                result.setText(result.getText() + "6");
+            }
         }
     };
     EventHandler handleFive = new EventHandler() {
         @Override
         public void handle(Event event) {
-            result.setText(result.getText() + "5");
+            if (checkD()) {
+                result.setText(result.getText() + "5");
+            }
         }
     };
     EventHandler handleFour = new EventHandler() {
         @Override
         public void handle(Event event) {
-            result.setText(result.getText() + "4");
+
+            if (checkD()) {
+                result.setText(result.getText() + "4");
+            }
+
         }
     };
     EventHandler handleThree = new EventHandler() {
         @Override
-        public void handle(Event event) {
-            result.setText(result.getText() + "3");
+        public void handle(Event event){
+         if (checkD()) {
+             result.setText(result.getText() + "3");
+         }
         }
     };
     EventHandler handleTwo = new EventHandler() {
@@ -125,31 +148,41 @@ public class Controller implements Initializable {
     EventHandler handlePlus = new EventHandler() {
         @Override
         public void handle(Event event) {
-            result.setText(result.getText() + "+");
+            if (checkCharacter())
+                result.setText(result.getText() + "+");
         }
+
     };
     EventHandler handleMinus = new EventHandler() {
         @Override
         public void handle(Event event) {
-            result.setText(result.getText() + "-");
+            if (checkCharacter()) {
+                result.setText(result.getText() + "-");
+            }
         }
     };
     EventHandler handleDivide = new EventHandler() {
         @Override
         public void handle(Event event) {
-            result.setText(result.getText() + "/");
+
+            if (checkCharacter()) {
+                result.setText(result.getText() + "/");
+            }
         }
+
     };
     EventHandler handleMultiple = new EventHandler() {
         @Override
         public void handle(Event event) {
-            result.setText(result.getText() + "*");
+            if (checkCharacter()) {
+                result.setText(result.getText() + "*");
+            }
         }
     };
     EventHandler handleBackspace = new EventHandler() {
         @Override
         public void handle(Event event) {
-            result.setText(result.getText().substring(0,result.getText().length()-1));
+            result.setText(result.getText().substring(0, result.getText().length() - 1));
         }
     };
     EventHandler handleDeleteAll = new EventHandler() {
@@ -179,23 +212,29 @@ public class Controller implements Initializable {
     EventHandler handleDoResult = new EventHandler() {
         @Override
         public void handle(Event event) {
-            Platform.runLater(new Runnable() {
-                public void run() {
-                    try {
-                        new Screen().start(new Stage());
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            });
+            ScriptEngineManager mgr =new ScriptEngineManager();
+            ScriptEngine engine =mgr.getEngineByName("JavaScript");
+            try {
+                result.setText(engine.eval(result.getText().toString()).toString());
+            }
+            catch (ScriptException e){
+                Alert alert =new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Error");
+                alert.setHeaderText("Expresion is not valid");
+                alert.showAndWait();
+            }
+
         }
     };
     EventHandler handleDot = new EventHandler() {
         @Override
         public void handle(Event event) {
-            result.setText(result.getText() + ".");
+            if (checkCharacter()) {
+                result.setText(result.getText() + ".");
+            }
         }
     };
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         nine.setOnAction(handleNine);
@@ -219,5 +258,31 @@ public class Controller implements Initializable {
         close_bracket.setOnAction(handleCloseBracket);
         doResult.setOnAction(handleDoResult);
         dot.setOnAction(handleDot);
+    }
+
+    private boolean checkCharacter() {
+        if (result.getText().charAt(result.getText().length() - 1) == '0' ||
+                result.getText().charAt(result.getText().length() - 1) == '1' ||
+                result.getText().charAt(result.getText().length() - 1) == '2' ||
+                result.getText().charAt(result.getText().length() - 1) == '3' ||
+                result.getText().charAt(result.getText().length() - 1) == '4' ||
+                result.getText().charAt(result.getText().length() - 1) == '5' ||
+                result.getText().charAt(result.getText().length() - 1) == '6' ||
+                result.getText().charAt(result.getText().length() - 1) == '7' ||
+                result.getText().charAt(result.getText().length() - 1) == '8' ||
+                result.getText().charAt(result.getText().length() - 1) == '9' ||
+                result.getText().charAt(result.getText().length() - 1) == ')') {
+            return true;
+
+
+        }
+        return false;
+    }
+
+    private boolean checkD() {
+        if (result.getText().charAt(result.getText().length() - 1) == ')') {
+            return false;
+        }
+        return true;
     }
 }
