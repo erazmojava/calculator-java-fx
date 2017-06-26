@@ -16,6 +16,8 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class Controller implements Initializable {
+    Float data = 0f;
+    int operation = -1;
 
     @FXML
     public Button prefix;
@@ -125,32 +127,46 @@ public class Controller implements Initializable {
     EventHandler handlePlus = new EventHandler() {
         @Override
         public void handle(Event event) {
-            result.setText(result.getText() + "+");
+            data = Float.parseFloat(result.getText());
+            operation = 1; //Addition
+            result.setText("");
         }
     };
     EventHandler handleMinus = new EventHandler() {
         @Override
         public void handle(Event event) {
-            result.setText(result.getText() + "-");
+
+            data = Float.parseFloat(result.getText());
+            operation = 2; //Addition
+            result.setText("");
         }
     };
     EventHandler handleDivide = new EventHandler() {
         @Override
         public void handle(Event event) {
-            result.setText(result.getText() + "/");
+
+            data = Float.parseFloat(result.getText());
+            operation = 3; //Addition
+            result.setText("");
         }
     };
     EventHandler handleMultiple = new EventHandler() {
         @Override
         public void handle(Event event) {
-            result.setText(result.getText() + "*");
+            data = Float.parseFloat(result.getText());
+            operation = 4; //Addition
+            result.setText("");
         }
     };
     EventHandler handleBackspace = new EventHandler() {
+
         @Override
         public void handle(Event event) {
-            result.setText(result.getText().substring(0,result.getText().length()-1));
+            if (result.getText().length()>0){
+                result.setText(result.getText().substring(0,result.getText().length()-1));
+            }
         }
+
     };
     EventHandler handleDeleteAll = new EventHandler() {
         @Override
@@ -179,15 +195,24 @@ public class Controller implements Initializable {
     EventHandler handleDoResult = new EventHandler() {
         @Override
         public void handle(Event event) {
-            Platform.runLater(new Runnable() {
-                public void run() {
+            Float secondOperand = Float.parseFloat(result.getText());
+            switch (operation) {
+                case 1:
+                    Float ans = data + secondOperand;
+                    result.setText(String.valueOf(ans));break;
+                case 2:
+                    ans = data - secondOperand;
+                    result.setText(String.valueOf(ans));break;
+                case 4:
+                    ans = data * secondOperand;
+                    result.setText(String.valueOf(ans));break;
+                case 3:
+                    ans = 0f;
                     try {
-                        new Screen().start(new Stage());
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            });
+                        ans = data / secondOperand;
+                    }catch(Exception e){result.setText("Error");}
+                    result.setText(String.valueOf(ans));break;
+            }
         }
     };
     EventHandler handleDot = new EventHandler() {
