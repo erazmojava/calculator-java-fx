@@ -7,10 +7,15 @@ import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.stage.Stage;
+import jdk.internal.org.objectweb.asm.tree.analysis.Interpreter;
 
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+import javax.script.ScriptException;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -131,25 +136,32 @@ public class Controller implements Initializable {
     EventHandler handleMinus = new EventHandler() {
         @Override
         public void handle(Event event) {
-            result.setText(result.getText() + "-");
+            if (checkCharacter()){
+                result.setText(result.getText() + "-");
+            }
         }
     };
     EventHandler handleDivide = new EventHandler() {
         @Override
         public void handle(Event event) {
-            result.setText(result.getText() + "/");
+            if (checkCharacter()) {
+                result.setText(result.getText() + "/");
+            }
         }
     };
     EventHandler handleMultiple = new EventHandler() {
         @Override
         public void handle(Event event) {
-            result.setText(result.getText() + "*");
+            if (checkCharacter()){
+                result.setText(result.getText() + "*");
+            }
+
         }
     };
     EventHandler handleBackspace = new EventHandler() {
         @Override
         public void handle(Event event) {
-            result.setText(result.getText().substring(0,result.getText().length()-1));
+            result.setText(result.getText().substring(0,result.getText().length() -1));
         }
     };
     EventHandler handleDeleteAll = new EventHandler() {
@@ -179,15 +191,18 @@ public class Controller implements Initializable {
     EventHandler handleDoResult = new EventHandler() {
         @Override
         public void handle(Event event) {
-            Platform.runLater(new Runnable() {
-                public void run() {
-                    try {
-                        new Screen().start(new Stage());
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            });
+            ScriptEngineManager mgr = new ScriptEngineManager();
+            ScriptEngine engine = mgr.getEngineByName("JavaScript");
+            try {
+                result.setText(engine.eval(result.getText().toString()).toString());
+            } catch (ScriptException e) {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Error");
+                alert.setHeaderText("Problem with parsing!");
+                alert.setContentText("Expression is not valid!");
+                alert.showAndWait();
+            }
+
         }
     };
     EventHandler handleDot = new EventHandler() {
@@ -220,4 +235,25 @@ public class Controller implements Initializable {
         doResult.setOnAction(handleDoResult);
         dot.setOnAction(handleDot);
     }
+
+    private boolean checkCharacter(){
+        if (
+                result.getText().length() > 1 && (result.getText().charAt(result.getText().length() -1) == '0' ||
+                        result.getText().charAt(result.getText().length() -1) == '1' ||
+                        result.getText().charAt(result.getText().length() -1) == '2')){
+            return true;
+        }
+        return false;
+    }
+
+    /*
+     *  Platform.runLater(new Runnable() {
+                public void run() {
+                    try {
+                        new Screen().start(new Stage());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }); */
 }

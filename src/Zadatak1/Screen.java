@@ -1,4 +1,4 @@
-package sample;/**
+package Zadatak1;/**
  * Created by osman on 6/18/17.
  */
 
@@ -19,8 +19,8 @@ public class Screen extends Application {
     @Override
     public void start(Stage primaryStage) throws IOException {
         Parent root = FXMLLoader.load(getClass().getResource("sample1.fxml"));
-        primaryStage.setTitle("Calculator");
-        primaryStage.setScene(new Scene(root, 350, 400));
+        primaryStage.setTitle("Circle");
+        primaryStage.setScene(new Scene(root, 800, 600));
         primaryStage.setResizable(false);
         primaryStage.show();
     }
